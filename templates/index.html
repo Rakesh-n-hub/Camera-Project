@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera App</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .button-container {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+        }
+        .start {
+            background-color: green;
+            color: white;
+        }
+        .stop {
+            background-color: red;
+            color: white;
+        }
+        #video-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        #video {
+            border: 2px solid black;
+            width: 640px;
+            height: 480px;
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Camera App</h1>
+
+    <div class="button-container">
+        <button id="start-btn" class="start">Start</button>
+        <button id="stop-btn" class="stop">Stop</button>
+    </div>
+
+    <div id="video-container">
+        <img id="video" src="" alt="Video Feed">
+    </div>
+
+    <script>
+        const startBtn = document.getElementById("start-btn");
+        const stopBtn = document.getElementById("stop-btn");
+        const videoContainer = document.getElementById("video-container");
+        const video = document.getElementById("video");
+
+        startBtn.addEventListener("click", function() {
+            fetch('/start')  // Call backend to start camera
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    video.src = "/video_feed";  // Set video feed
+                    videoContainer.style.display = "flex";  // Show and center video
+                });
+        });
+
+        stopBtn.addEventListener("click", function() {
+            fetch('/stop')  // Call backend to stop camera
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    video.src = "";  // Clear video feed
+                    videoContainer.style.display = "none";  // Hide video
+                });
+        });
+    </script>
+
+</body>
+</html>

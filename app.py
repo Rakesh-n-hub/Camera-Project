@@ -51,5 +51,3 @@ def video_feed():
     else:
         return "Camera not started."
 
-if __name__ == '__main__':
-    app.run(debug=True)

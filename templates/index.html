@@ -44,7 +44,7 @@
             align-items: center;
             width: 100%;
         }
-        #video {
+        video {
             border: 2px solid black;
             width: 640px;
             height: 480px;
@@ -62,7 +62,7 @@
     </div>
 
     <div id="video-container">
-        <img id="video" src="" alt="Video Feed">
+        <video id="video" autoplay></video>
     </div>
 
     <script>
@@ -70,25 +70,27 @@
         const stopBtn = document.getElementById("stop-btn");
         const videoContainer = document.getElementById("video-container");
         const video = document.getElementById("video");
+        let stream = null;
 
-        startBtn.addEventListener("click", function() {
-            fetch('/start')  // Call backend to start camera
-                .then(response => response.text())
-                .then(data => {
-                    console.log(data);
-                    video.src = "/video_feed";  // Set video feed
-                    videoContainer.style.display = "flex";  // Show and center video
-                });
+        startBtn.addEventListener("click", async function() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                videoContainer.style.display = "flex";  // Show video
+            } catch (err) {
+                console.error("Error accessing the camera:", err);
+                alert("Camera access denied or not available.");
+            }
         });
 
         stopBtn.addEventListener("click", function() {
-            fetch('/stop')  // Call backend to stop camera
-                .then(response => response.text())
-                .then(data => {
-                    console.log(data);
-                    video.src = "";  // Clear video feed
-                    videoContainer.style.display = "none";  // Hide video
-                });
+            if (stream) {
+                let tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());  // Stop all tracks
+                stream = null;
+            }
+            video.srcObject = null;
+            videoContainer.style.display = "none";  // Hide video
         });
     </script>
 
